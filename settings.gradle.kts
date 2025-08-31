@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Unluac Mobile"
 include(":app")
- 
+include(":unluac")
