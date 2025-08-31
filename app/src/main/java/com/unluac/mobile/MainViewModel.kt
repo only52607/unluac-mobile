@@ -22,6 +22,8 @@ enum class UnluacMode(val argument: String) {
 data class UiState(
     val mode: UnluacMode = UnluacMode.DECOMPILE,
     val useRawString: Boolean = false,
+    val useLuaj: Boolean = false,
+    val noDebug: Boolean = false,
     val inputUri: Uri? = null,
     val inputFileName: String? = null,
     val inputFileSize: Long? = null,
@@ -42,6 +44,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun onUseRawStringChange(useRawString: Boolean) {
         uiState = uiState.copy(useRawString = useRawString)
+    }
+
+    fun onUseLuajChange(useLuaj: Boolean) {
+        uiState = uiState.copy(useLuaj = useLuaj)
+    }
+
+    fun onNoDebugChange(noDebug: Boolean) {
+        uiState = uiState.copy(noDebug = noDebug)
     }
 
     fun onInputFileSelected(uri: Uri?) {
@@ -80,6 +90,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 }
                 if (uiState.useRawString) {
                     args.add("--rawstring")
+                }
+                if (uiState.useLuaj) {
+                    args.add("--luaj")
+                }
+                if (uiState.noDebug) {
+                    args.add("--nodebug")
                 }
                 args.add("-o")
                 args.add(tempOutputFile.absolutePath)

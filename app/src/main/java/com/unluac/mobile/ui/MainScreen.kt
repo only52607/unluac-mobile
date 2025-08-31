@@ -1,24 +1,50 @@
 package com.unluac.mobile.ui
 
-import androidx.compose.foundation.layout.*
+import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.unluac.mobile.BuildConfig
 import com.unluac.mobile.R
 import com.unluac.mobile.UiState
 import com.unluac.mobile.UnluacMode
-import java.text.CharacterIterator
-import java.text.StringCharacterIterator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,13 +52,14 @@ fun MainScreen(
     uiState: UiState,
     onModeChange: (UnluacMode) -> Unit,
     onUseRawStringChange: (Boolean) -> Unit,
+    onUseLuajChange: (Boolean) -> Unit,
+    onNoDebugChange: (Boolean) -> Unit,
     onSelectFileClick: () -> Unit,
     onRunClick: () -> Unit,
     onOpenFileClick: (String) -> Unit,
     onShareFileClick: (String) -> Unit,
     onSaveAsClick: () -> Unit
 ) {
-    val context = LocalContext.current
     var showAboutDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -56,7 +83,12 @@ fun MainScreen(
         ) {
             ModeSelector(selectedMode = uiState.mode, onModeChange = onModeChange)
             Spacer(modifier = Modifier.height(16.dp))
-            Options(useRawString = uiState.useRawString, onUseRawStringChange = onUseRawStringChange)
+            Options(
+                uiState = uiState,
+                onUseRawStringChange = onUseRawStringChange,
+                onUseLuajChange = onUseLuajChange,
+                onNoDebugChange = onNoDebugChange
+            )
             Spacer(modifier = Modifier.height(16.dp))
             FileSelector(fileName = uiState.inputFileName, onSelectFileClick = onSelectFileClick)
             Spacer(modifier = Modifier.height(32.dp))
@@ -92,10 +124,10 @@ private fun ModeSelector(selectedMode: UnluacMode, onModeChange: (UnluacMode) ->
             readOnly = true,
             label = { Text(stringResource(id = R.string.mode)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.menuAnchor().fillMaxWidth()
+            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth()
         )
         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            UnluacMode.values().forEach { mode ->
+            UnluacMode.entries.forEach { mode ->
                 DropdownMenuItem(
                     text = { Text(stringResource(id = when(mode) {
                         UnluacMode.DECOMPILE -> R.string.decompile
@@ -113,12 +145,25 @@ private fun ModeSelector(selectedMode: UnluacMode, onModeChange: (UnluacMode) ->
 }
 
 @Composable
-private fun Options(useRawString: Boolean, onUseRawStringChange: (Boolean) -> Unit) {
+private fun Options(
+    uiState: UiState,
+    onUseRawStringChange: (Boolean) -> Unit,
+    onUseLuajChange: (Boolean) -> Unit,
+    onNoDebugChange: (Boolean) -> Unit
+) {
     Column {
         Text(text = stringResource(id = R.string.options), style = MaterialTheme.typography.titleMedium)
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(checked = useRawString, onCheckedChange = onUseRawStringChange)
+            Checkbox(checked = uiState.useRawString, onCheckedChange = onUseRawStringChange)
             Text(text = stringResource(id = R.string.raw_string))
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = uiState.useLuaj, onCheckedChange = onUseLuajChange)
+            Text(text = stringResource(id = R.string.luaj))
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = uiState.noDebug, onCheckedChange = onNoDebugChange)
+            Text(text = stringResource(id = R.string.nodebug))
         }
     }
 }
@@ -199,20 +244,17 @@ private fun InfoRow(label: String, value: String) {
     }
 }
 
+@SuppressLint("DefaultLocale")
 private fun formatFileSize(size: Long?): String {
     if (size == null || size <= 0) return "N/A"
-    val sb = StringBuilder(10)
-    val ci = StringCharacterIterator("kMGTPE")
-    var bytes = size
-    while (bytes >= 1024) {
+    var bytes = size.toDouble()
+    val units = arrayOf("B", "KB", "MB", "GB", "TB")
+    var unitIndex = 0
+    while (bytes >= 1024 && unitIndex < units.size - 1) {
         bytes /= 1024
-        ci.next()
+        unitIndex++
     }
-    sb.append(String.format("%.2f", bytes / 1024.0))
-    sb.append(' ')
-    sb.append(ci.current())
-    sb.append("B")
-    return sb.toString()
+    return String.format("%.2f %s", bytes, units[unitIndex])
 }
 
 @Composable
@@ -222,10 +264,10 @@ private fun AboutDialog(onDismissRequest: () -> Unit) {
         title = { Text(text = stringResource(id = R.string.about)) },
         text = {
             Column {
-                Text(stringResource(R.string.version, "1.0"))
-                Text(stringResource(R.string.unluac_version, "1.2.3.530"))
+                Text(stringResource(R.string.version, BuildConfig.VERSION_NAME))
+                Text(stringResource(R.string.unluac_version, unluac.Main.version))
                 Text(stringResource(R.string.author, "OOOOONLY"))
-                Text(stringResource(R.string.github, "https://github.com/wusy/unluac-mobile"))
+                Text(stringResource(R.string.github, "https://github.com/only52607/unluac-mobile"))
             }
         },
         confirmButton = {

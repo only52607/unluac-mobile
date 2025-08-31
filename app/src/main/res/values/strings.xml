@@ -6,6 +6,8 @@
     <string name="assemble">Assemble</string>
     <string name="options">Options</string>
     <string name="raw_string">Raw String</string>
+    <string name="luaj">Luaj</string>
+    <string name="nodebug">No Debug</string>
     <string name="select_file">Select File</string>
     <string name="no_file_selected">No file selected</string>
     <string name="run">Run</string>

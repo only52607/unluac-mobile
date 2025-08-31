@@ -6,6 +6,8 @@
     <string name="assemble">汇编</string>
     <string name="options">选项</string>
     <string name="raw_string">原始字符串</string>
+    <string name="luaj">luaj模式</string>
+    <string name="nodebug">移除调试信息</string>
     <string name="select_file">选择文件</string>
     <string name="no_file_selected">未选择文件</string>
     <string name="run">开始</string>
