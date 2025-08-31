@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.unluac.mobile"
+    namespace = "com.github.only52607.unluac.mobile"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.unluac.mobile"
+        applicationId = "com.github.only52607.unluac.mobile"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -49,6 +49,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    
 }
 
 dependencies {

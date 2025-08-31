@@ -1,4 +1,4 @@
-package com.unluac.mobile
+package com.github.only52607.unluac.mobile
 
 import android.app.Application
 import android.net.Uri

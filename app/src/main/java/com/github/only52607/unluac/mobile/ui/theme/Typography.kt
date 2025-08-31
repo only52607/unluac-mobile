@@ -1,4 +1,4 @@
-package com.unluac.mobile.ui.theme
+package com.github.only52607.unluac.mobile.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

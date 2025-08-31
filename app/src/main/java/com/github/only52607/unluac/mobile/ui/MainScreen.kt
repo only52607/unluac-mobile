@@ -1,4 +1,4 @@
-package com.unluac.mobile.ui
+package com.github.only52607.unluac.mobile.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
@@ -41,10 +41,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.unluac.mobile.BuildConfig
-import com.unluac.mobile.R
-import com.unluac.mobile.UiState
-import com.unluac.mobile.UnluacMode
+import com.github.only52607.unluac.mobile.BuildConfig
+import com.github.only52607.unluac.mobile.R
+import com.github.only52607.unluac.mobile.UiState
+import com.github.only52607.unluac.mobile.UnluacMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
