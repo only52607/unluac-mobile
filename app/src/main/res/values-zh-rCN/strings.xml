@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">UnluacMobile</string>
+    <string name="mode">模式</string>
+    <string name="decompile">反编译</string>
+    <string name="disassemble">反汇编</string>
+    <string name="assemble">汇编</string>
+    <string name="options">选项</string>
+    <string name="raw_string">原始字符串</string>
+    <string name="select_file">选择文件</string>
+    <string name="no_file_selected">未选择文件</string>
+    <string name="run">开始</string>
+    <string name="running">运行中…</string>
+    <string name="success_title">成功</string>
+    <string name="error_title">错误</string>
+    <string name="open_file">打开</string>
+    <string name="share_file">分享</string>
+    <string name="save_as">另存为…</string>
+    <string name="about">关于</string>
+    <string name="version">版本: %s</string>
+    <string name="unluac_version">unluac 版本: %s</string>
+    <string name="author">作者: %s</string>
+    <string name="github">GitHub: %s</string>
+    <string name="input_file">输入文件</string>
+    <string name="input_size">输入大小</string>
+    <string name="output_size">输出大小</string>
+</resources>

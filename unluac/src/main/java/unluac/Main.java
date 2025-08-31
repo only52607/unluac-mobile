@@ -136,7 +136,6 @@ public class Main {
       default:
         throw new IllegalStateException();
       }
-      System.exit(0);
     }
   }
   
@@ -148,7 +147,7 @@ public class Main {
       print_usage(System.err);
       System.err.println("For information about options, use option: --help");
     }
-    System.exit(1);
+    throw new UnluacException(err);
   }
   
   public static void help() {

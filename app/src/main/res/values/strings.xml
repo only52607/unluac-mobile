@@ -1,3 +1,26 @@
 <resources>
-    <string name="app_name">Unluac Mobile</string>
+    <string name="app_name">UnluacMobile</string>
+    <string name="mode">Mode</string>
+    <string name="decompile">Decompile</string>
+    <string name="disassemble">Disassemble</string>
+    <string name="assemble">Assemble</string>
+    <string name="options">Options</string>
+    <string name="raw_string">Raw String</string>
+    <string name="select_file">Select File</string>
+    <string name="no_file_selected">No file selected</string>
+    <string name="run">Run</string>
+    <string name="running">Running…</string>
+    <string name="success_title">Success</string>
+    <string name="error_title">Error</string>
+    <string name="open_file">Open</string>
+    <string name="share_file">Share</string>
+    <string name="save_as">Save As…</string>
+    <string name="about">About</string>
+    <string name="version">Version: %s</string>
+    <string name="unluac_version">unluac Version: %s</string>
+    <string name="author">Author: %s</string>
+    <string name="github">GitHub: %s</string>
+    <string name="input_file">Input File</string>
+    <string name="input_size">Input Size</string>
+    <string name="output_size">Output Size</string>
 </resources>
