@@ -1,0 +1,45 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build_and_upload_apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Cache .gradle/caches
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: Cache .gradle/wrapper
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle-wrapper-
+
+      - name: Add execute permission to gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build Android App
+        env:
+          STORE_PASSWORD: '123456'
+          KEY_ALIAS: app
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          echo "${{ secrets.SIGNING_KEY }}" > key.jks.base64
+          base64 -d key.jks.base64 > key.jks
+          ./gradlew assembleRelease
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: ./app/build/outputs/apk/release/app-release.apk

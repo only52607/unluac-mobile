@@ -1,5 +1,6 @@
 package com.github.only52607.unluac.mobile
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,6 +12,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.content.FileProvider
+import com.github.javiersantos.appupdater.AppUpdater
+import com.github.javiersantos.appupdater.enums.UpdateFrom
 import com.github.only52607.unluac.mobile.ui.MainScreen
 import com.github.only52607.unluac.mobile.ui.theme.UnluacMobileTheme
 import java.io.File
@@ -19,10 +22,12 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
 
+    @SuppressLint("InvalidFragmentVersionForActivityResult")
     private val openFileLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         viewModel.onInputFileSelected(uri)
     }
 
+    @SuppressLint("InvalidFragmentVersionForActivityResult")
     private val saveFileLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
         uri?.let { destinationUri ->
             viewModel.uiState.outputFilePath?.let { sourcePath ->
@@ -37,6 +42,10 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppUpdater(this)
+            .setUpdateFrom(UpdateFrom.GITHUB)
+            .setGitHubUserAndRepo("only52607", "unluac-mobile")
+            .start()
         super.onCreate(savedInstanceState)
         setContent {
             UnluacMobileTheme {
