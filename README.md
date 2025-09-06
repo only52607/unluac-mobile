@@ -22,8 +22,6 @@ This project is not affiliated with the official unluac project. For the origina
 
 ## Screenshots
 
-*(A placeholder for app screenshots. You can add images here to showcase the application's user interface.)*
-
 ![Screenshot 1](image/screenshot1.jpg)
 
 ## License
